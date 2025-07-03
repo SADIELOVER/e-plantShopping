@@ -1,7 +1,7 @@
 // ProductList.jsx
 import React, { useState } from 'react';
 import './ProductList.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from './CartSlice';
 import CartItem from './CartItem';
 
@@ -9,6 +9,9 @@ function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState({});
   const dispatch = useDispatch();
+
+  const cartItems = useSelector(state => state.cart.items);
+  const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleAddToCart = (plant) => {
     dispatch(addItem(plant));
@@ -54,7 +57,7 @@ function ProductList({ onHomeClick }) {
     textDecoration: 'none',
   };
 
-  // ... your plantsArray remains unchanged (keep as is)
+  // ... keep your existing plantsArray as it is above this return
 
   return (
     <div>
@@ -71,8 +74,28 @@ function ProductList({ onHomeClick }) {
           </div>
         </div>
         <div style={styleObjUl}>
-          <div> <a href="#" style={styleA}>Plants</a></div>
-          <div> <a href="#" onClick={handleCartClick} style={styleA}><h1 className='cart'>🛒</h1></a></div>
+          <div><a href="#" style={styleA}>Plants</a></div>
+          <div>
+            <a href="#" onClick={handleCartClick} style={styleA}>
+              <div style={{ position: 'relative' }}>
+                <h1 className='cart'>🛒</h1>
+                {totalItemsInCart > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-8px',
+                    background: 'red',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '4px 8px',
+                    fontSize: '12px',
+                  }}>
+                    {totalItemsInCart}
+                  </span>
+                )}
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
